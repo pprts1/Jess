@@ -1,13 +1,10 @@
 import javax.swing.*;
+import java.sql.SQLOutput;
 
 public class Start {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                createWindow();
-            }
-        });
+        SwingUtilities.invokeLater(() -> createWindow());
+
     }
 
     private static void createWindow() {

@@ -4,19 +4,30 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class Piece {
-    static Piece selectedPiece = null;
-    protected int lastX = 0;
-    protected int lastY = 0;
-    public static List<Piece> pieceList = new LinkedList<>();
-    protected String fileName;
+    private boolean hasPieceMoved = false;
+    static Piece selectedPiece;
+    public static boolean isTurnForWhite = true;
+    static final int MAX_RANGE = 800;
     protected int xReal;
     protected int yReal;
     protected int xSquare;
     protected int ySquare;
+    protected int lastX = 0;
+    protected int lastY = 0;
+    public static List<Piece> pieceList = new LinkedList<>();
+    protected String fileName;
     protected boolean isWhite;
     protected BufferedImage pieceImage;
+    protected boolean isPawn;
+    protected boolean isBishop;
+    protected boolean isKnight;
+    protected boolean isRook;
+    protected boolean isQueen;
+    protected boolean isKing;
+    protected boolean isLegalMove = false;
 
     public Piece(String fileName, int xSquare, int ySquare, boolean isWhite) {
         this.fileName = fileName;
@@ -28,43 +39,30 @@ public class Piece {
 
         try {
             if (fileName != null) {
-                this.pieceImage = ImageIO.read(this.getClass().getResource(fileName));
+                this.pieceImage = ImageIO.read(Objects.requireNonNull(this.getClass().getResource(fileName)));
             } else return;
-
-
-
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         pieceList.add(this);
     }
     public void movePiece(int x, int y) {
-//        if(Piece.getPiece(x,y).xReal<0 || Piece.getPiece(x,y).yReal<0){
-//            return;
-//        }
         if(Piece.getPiece(x, y)!=null){
             if(Piece.getPiece(x, y).isWhite != isWhite)  {
                 Piece.getPiece(x, y).removePiece();
-            }else {
-//                Piece.selectedPiece.xReal = Piece.selectedPiece.lastX*100;
-//                Piece.selectedPiece.yReal = Piece.selectedPiece.lastY*100;
-//                Piece.pieceList.add(Piece.selectedPiece);
-//                Piece.selectedPiece.lastX = Piece.selectedPiece.xReal/100;
-//                Piece.selectedPiece.lastY = Piece.selectedPiece.yReal/100;
-//                Piece.pieceList.remove(Piece.selectedPiece);
-//                Piece.pieceList.add(Piece.selectedPiece);
+            }else {                                 // this moves the piece of the same color back to its initial square
                   xReal = this.xSquare*100;
                   yReal = this.ySquare*100;
-                return;
-//                Piece.pieceList.remove(Piece.getPiece(x,y));
-//                Piece.pieceList.add(Piece.getPiece(x,y));
+                  return;
             }
         }
+
         this.xSquare = x;
         this.ySquare = y;
         this.xReal = this.xSquare*100;
         this.yReal = this.ySquare*100;
+        Piece.isTurnForWhite = !Piece.isTurnForWhite;
     }
 
     public void removePiece() {
@@ -82,5 +80,19 @@ public class Piece {
             }
         }
         return null;
+    }
+
+
+    public void calculateLegalMoves(int x, int y) {
+
+    }
+
+    public boolean hasPieceMoved() {
+        return this.hasPieceMoved;
+    }
+    public void setHasPieceMoved() {
+        if (!this.hasPieceMoved) {
+            this.hasPieceMoved = true;
+        }
     }
 }
